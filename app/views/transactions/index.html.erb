@@ -3,7 +3,7 @@
 <!-- Step 1: List all transactions, starting with the ICO -->
 
 <ol>
-  <% for transaction in Transactions.all %>
+  <% for transaction in Transaction.all %>
     <% from_user = User.find_by({"id" => transaction["from_user_id"]}) %>
     <% to_user = User.find_by({"id" => transaction["to_user_id"]}) %>
 
@@ -19,7 +19,19 @@
 
 <!-- Step 2: Calculate and display the balances -->
 
-
+<ul>
+  Expected balances:
+  <% for user in User.all %>
+  <%
+    balance = 0
+    balance = balance + Transaction.where({"to_user_id" => user["id"]}).sum("amount")
+    balance = balance - Transaction.where({"from_user_id" => user["id"]}).sum("amount")
+  %>
+  
+  <li>Balance for <%= user["name"] %>: <%= balance %> KC</li>
+  
+  <% end %>
+</ul>
 
 <!-- 
 Expected balances:
